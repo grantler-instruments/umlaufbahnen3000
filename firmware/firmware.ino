@@ -51,7 +51,6 @@ void setup() {
 
   for (auto i = 0; i < NUMBER_OF_TRACKS; i++) {
     pinMode(trackPins[i], INPUT_PULLUP);
-
     _buttons[i].init(trackPins[i], HIGH, i);
   }
   ButtonConfig* buttonConfig = ButtonConfig::getSystemButtonConfig();
@@ -61,7 +60,11 @@ void setup() {
 
 void loop() {
   auto timestamp = millis();
+
+#if TEENSY == 1
   usbMIDI.read();
+#endif
+
   for (auto i = 0; i < NUMBER_OF_TRACKS; i++) {
     _buttons[i].check();
     if (digitalRead(trackPins[i]) != _buttonStates[i]) {
@@ -73,35 +76,32 @@ void loop() {
 
 // The event handler for the button.
 void handleEvent(AceButton* button, uint8_t eventType, uint8_t buttonState) {
-  // Print out a message for all events.
-  // Serial.print(F("handleEvent(): eventType: "));
-  // Serial.print(AceButton::eventName(eventType));
-  // Serial.print(F("; buttonState: "));
-  // Serial.println(buttonState);
-
-  // Get the LED pin
   uint8_t id = button->getId();
   Serial.println(id);
 
   switch (eventType) {
     case AceButton::kEventPressed:
-      // TODO: send note on
-      Serial.println("button pressed");
+      {
+        // TODO: send note on
+        Serial.println("button pressed");
 #if TEENSY == 1
-      usbMIDI.sendNoteOn(trackNotes[id], 127, MIDI_CHANNEL);
+        usbMIDI.sendNoteOn(trackNotes[id], 127, MIDI_CHANNEL);
 #endif
 #if ESP32 == 1
-      esp_err_t result = ESP_NOW_MIDI.sendNoteOn(trackNotes[id], 127, MIDI_CHANNEL);
+        esp_err_t result = ESP_NOW_MIDI.sendNoteOn(trackNotes[id], 127, MIDI_CHANNEL);
 #endif
-      break;
+        break;
+      }
     case AceButton::kEventReleased:
-#if TEENSY
-      usbMIDI.sendNoteOff(trackNotes[id], 127, MIDI_CHANNEL);
+      {
+#if TEENSY == 1
+        usbMIDI.sendNoteOff(trackNotes[id], 127, MIDI_CHANNEL);
 #endif
 #if ESP32 == 1
-      esp_err_t result = ESP_NOW_MIDI.sendNoteOff(trackNotes[id], 0, MIDI_CHANNEL);
+        esp_err_t result = ESP_NOW_MIDI.sendNoteOff(trackNotes[id], 0, MIDI_CHANNEL);
 #endif
-      break;
+        break;
+      }
   }
 }
 

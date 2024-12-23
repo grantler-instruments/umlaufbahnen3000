@@ -1,5 +1,5 @@
-#define TEENSY 1
-#define ESP32 0
+#define TEENSY 0
+#define ESP32 1
 
 #define NUMBER_OF_TRACKS 8
 int trackPins[] = {2, 3, 4, 5, 6, 7, 8, 9};
