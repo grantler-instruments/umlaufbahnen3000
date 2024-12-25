@@ -80,7 +80,7 @@ const useStore = create<State>()(
                 if(token.rotation === newRotation){
                   console.log(token.track)
                   WebMidi.outputs.filter((output) => output.name.includes("IAC")).forEach((output) => {
-                    output.channels[16].playNote(36 + token.track)
+                    output.channels[16].playNote(36 + token.track, {duration: 100})
                   })
                 // output.channels[11].playNote(60 + token.track);
                 }
