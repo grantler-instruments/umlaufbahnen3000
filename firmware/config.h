@@ -1,8 +1,5 @@
-#define TEENSY 0
-#define ESP32 1
-
 #define NUMBER_OF_TRACKS 8
-int trackPins[] = {2, 3, 4, 5, 6, 7, 8, 9};
+int trackPins[] = {9,10,11,12,13,14,40,39};
 int trackNotes[] = {60, 61, 62, 63, 64, 65, 66, 67};
 #define MIDI_CHANNEL 10
 
